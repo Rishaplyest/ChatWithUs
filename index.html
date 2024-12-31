@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat With Us</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            min-width: 1024px;
+        }
+#yourGroupList {
+    max-width: 800px; /* Maximum width of the container */
+    min-width: 300px; /* Minimum width of the container */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 300px; /* Set a max height so scrolling is needed if content exceeds this height */
+    padding: 10px; /* Optional: for spacing around the content */
+    margin: 0 auto; /* Center the content horizontally */
+}
+
+.group-item {
+    border: 1px solid #ccc; /* Optional: add border to each group item */
+    margin-bottom: 10px; /* Space between each group item */
+    padding: 10px; /* Space inside each group item */
+    background-color: #f9f9f9; /* Optional: background color for group items */
+}
+
+#createGroupBtn{
+     font-size: 40px;
+}
+send-btn {
+	width: 50px;
+	}
+#groupList {
+    max-height: 240px;  /* Maximum height, adjust as needed */
+    max-width: 100%;    /* Maximum width, you can change this based on your design */
+    padding: 10px;      /* Optional: Add padding for spacing */
+overflow-y: auto;   /* Enables vertical scrolling if content exceeds max height */
+    overflow-x: hidden; 
+    border: 1px solid #ddd; /* Optional: Add a border around the list */
+    border-radius: 8px;  /* Optional: Rounded corners for the list container */
+}
+
+.group-item {
+    border-top: 2px solid #ddd;  /* Border at the top of each group item */
+    border-bottom: 2px solid #ddd; /* Border at the bottom of each group item */
+    padding: 10px;                /* Padding around each group */
+    background-color: #f9f9f9;    /* Optional: Background color for group items */
+    border-radius: 8px;           /* Optional: Rounded corners for group items */
+    margin-bottom: 10px;          /* Margin between group items */
+}
+
+.group-item:first-child {
+    border-top: 2px solid #ddd; /* Ensures first item has top border too */
+}
+
+.group-item:last-child {
+    border-bottom: 2px solid #ddd; /* Ensures last item has bottom border too */
+}
+
+#groupslist h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Circle Style for Group and Creator Icons */
+.group-item img {
+    width: 50px;             /* Fixed size for the icons */
+    height: 50px;            /* Fixed size for the icons */
+    border-radius: 50%;      /* Makes the icon circular */
+    object-fit: cover;       /* Ensures the image fills the circle without distortion */
+    margin-right: 10px;      /* Space between the icon and text */
+}
+
+.group-item .creator-icon {
+    width: 30px;             /* Smaller icon for creator */
+    height: 30px;            /* Smaller icon for creator */
+}
+
+.group-item img.creator-icon {
+    margin-right: 5px;
+}
+
+#fullViewModal {
+    display: none;
+    position: fixed;
+    top: -50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, -50.0);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#fullViewModal .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+}
+
+#fullViewModal .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: red;
+}
+
+.attachment-image img{
+    width: 400px; /* Set fixed width */
+    height: 400px; /* Set fixed height */
+    object-fit: cover; /* Ensure proper scaling without distortion */
+    border-radius: 5px; /* Remove the circular shape */
+    margin-top: 10px; /* Add spacing for better layout */
+}
+
+/* Styling for Video Attachments */
+.attachment-video {
+    width: 50px; /* Adjust width */
+    height: 50px; /* Automatically calculate height for aspect ratio */
+    margin-top: 10px;
+    border-radius: 0; /* Remove circular shape */
+}
+
+/* Styling for Audio Attachments */
+.attachment-audio {
+    width: 100%; /* Full width of container */
+    margin-top: 10px;
+    border-radius: 0; /* Remove circular shape */
+}
+
+/* Downloadable Files */
+.attachment-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.attachment-link:hover {
+    text-decoration: underline;
+}
+.logout{
+    font-size: 16px;
+    width: 100px;
+}
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+        section {
+            display: none;
+        }
+        section.active {
+            display: block;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .messages {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            height: 900px;
+            overflow-y: auto;
+            background: #f9f9f9;
+   box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.5);
+        }
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+animation: fadeInUp 0.5s ease-in-out;
+        }
+        .message img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+.message.sent .username {
+    color: red;
+    font-weight: bold;
+      margin-bottom: 5px;
+}
+
+.message.received .username {
+    color: green;
+    font-weight: bold;
+     margin-bottom: 5px;
+}
+
+        .message .content {
+            padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 1.1em;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        .message.sent .content {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+        }
+        .message.received .content {
+            background: linear-gradient(135deg, #32de84, #228b22);
+            color: #000;
+        }
+        .message-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .message-box input {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 2px solid #000;
+            border-radius: 5px;
+}
+        .message-box button {
+            padding: 5px;
+            font-size: 16px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .message-box button:hover {
+            background: #0056b3;
+        }
+        section {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.4s ease-in-out;
+}
+
+section.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.toggle-link {
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.toggle-link:hover {
+    color: #0056b3;
+}
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    background: #aaa;
+}
+
+.notifications, .search-friends {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.notifications {
+    max-width: 40%;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.search-friends {
+    max-width: 60%;
+}
+/* Modal Styles */
+.modal-content {
+    background: #fff;
+    margin-top: 0px;
+    padding: 30px;
+    animation: fadeIn 0.5s ease-in-out;
+    border-radius: 10px;
+    text-align: bottom;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
+    width: 900px; /* Increase width */
+    max-width: 100%; /* Ensure it adapts to smaller screens */
+    min-height: 200px; /* Add minimum height */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    background: #fff;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+}
+
+/* Close Button Styles */
+#closeModal {
+    position: absolute; /* Absolute positioning for the close button */
+    top: 1340px; /* Position from the top */
+    right: -580px; /* Position from the right */
+    color: white;
+   color: red;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2; /* Keep it above the modal content */
+}
+.close {
+position: absolute; /* Absolute positioning for the close button */
+    top: 10px; /* Position from the top */
+    right: 25px; /* Position from the right */
+    color: white;
+   color: red;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2; /* Keep it above the modal content */
+}
+
+/* Modal Image */
+.modal-content img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensure the image is fully visible without distortion */
+}
+button {
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        color: #fff;
+        font-size: 1.2em;
+        font-weight: bold;
+        border: none;
+        padding: 15px 30px;
+        margin: 10px 0;
+        border-radius: 25px;
+        box-shadow: 0 5px 15px rgba(255, 118, 138, 0.5);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    button:hover {
+        transform: translateY(-5px) scale(1.05);
+        background: linear-gradient(135deg, #ffb199, #ff655b);
+        box-shadow: 0 10px 20px rgba(255, 101, 91, 0.7);
+    }
+   .create-button {
+            position: fixed;
+            bottom: -1100px;
+            right: 0px;
+            width: 100px;
+            height: 100px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+.btn {
+        background: linear-gradient(135deg, #7f00ff, #e100ff);
+        color: #fff;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        transition: all 0.4s ease-in-out;
+        box-shadow: 0 5px 15px rgba(113, 0, 255, 0.5);
+        font-size: 1.2em;
+    }
+
+    .btn:hover {
+        background: linear-gradient(135deg, #e100ff, #7f00ff);
+        box-shadow: 0 10px 25px rgba(113, 0, 255, 0.8);
+        transform: translateY(-5px) scale(1.05);
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.input-group input:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #2575fc;
+}
+.icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 0 20px #fff, 0 0 40px #0ff, 0 0 60px #0ff;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .icon:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px #ff0, 0 0 50px #ff0, 0 0 70px #ff0;
+        }
+    .txt {
+    	    position: absolute;
+             top: 40px;
+             left: 360px;
+            text-align: center;
+            font-size: 2.5em;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: motion 3s infinite ease-in-out, colorChange 5s infinite linear, shadowPulse 5s infinite linear;
+        }
+        @keyframes motion {
+            0% {
+                transform: scale(1) translateY(0);
+            }
+            25% {
+                transform: scale(1.2, 1.4) translateY(-15px);
+            }
+            50% {
+                transform: scale(1.4, 1.2) translateY(15px);
+            }
+            75% {
+                transform: scale(1.2, 1.4) translateY(-1px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+            }
+        }
+        @keyframes colorChange {
+            0% {
+                color: #ff0000;
+            }
+            25% {
+                color: #00ff00;
+            }
+            50% {
+                color: #0000ff;
+            }
+            75% {
+                color: #ffff00;
+            }
+            100% {
+                color: #ff0000;
+            }
+        }
+        @keyframes shadowPulse {
+            0% {
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            25% {
+                text-shadow: 0 0 5px #00ff00, 0 0 15px #00ff00, 0 0 25px #00ff00, 0 0 35px #00ff00;
+            }
+            50% {
+                text-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff, 0 0 30px #0000ff, 0 0 40px #0000ff;
+            }
+            75% {
+                text-shadow: 0 0 15px #ffff00, 0 0 25px #ffff00, 0 0 35px #ffff00, 0 0 45px #ffff00;
+            }
+            100% {
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+<img src="ChatWithUs.jpg" class="icon"alt="icon"><h1 class="txt">CHAT_WITH_US</h1>
+<div class="container">
+    <!-- Authentication Section -->
+    <section id="auth-section" class="active">
+        <!-- Buttons to Open Modals -->
+        <button id="openLoginModal" class="btn">Login</button>
+        <div class="create-button" id="openSignUpModal">
+            <i class="fas fa-plus"></i>
+        </div>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <h2>Login</h2>
+                <div class="input-group">
+                    <input type="text" id="login-username" placeholder="Enter Username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="Enter Password">
+                    <i class="toggle-password fas fa-eye" onclick="togglePassword('login-password', this)"></i>
+                </div>
+                <button id="login-btn" class="btn">Login</button>
+                <button class="closeModal btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Sign-Up Modal -->
+        <div id="signUpModal" class="modal">
+            <div class="modal-content">
+                <h2>Sign Up</h2>
+                <div class="input-group">
+                    <input type="text" id="signup-username" placeholder="Enter Username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signup-password" placeholder="Enter Password">
+                    <i class="toggle-password fas fa-eye" onclick="togglePassword('signup-password', this)"></i>
+                </div>
+                <div class="input-group">
+                    <input type="file" id="profile-icon" accept="image/*">
+                </div>
+                <button id="signup-btn" class="btn">Sign Up</button>
+                <button class="closeModal btn">Close</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section id="search-section">
+    <div class="flex-container">
+        <!-- Notifications Section -->
+        <div class="notifications">
+            <h3>Notifications</h3>
+            <div id="notifications-list">
+                <p>No new messages</p>
+            </div>
+        </div>
+
+        <!-- Search Friends Section -->
+        <div class="search-friends">
+            <h3>Search Friends</h3>
+            <input type="text" id="search-user" placeholder="Enter Username to Search">
+            <button id="search-btn">Search</button>
+            <div id="user-search-result"></div>
+        </div>
+    </div>
+<button class="logout" id="logout-btn">Logout</button>
+<!-- Create Group Button -->
+<button id="createGroupBtn" class="btn">Create Group</button>
+<!-- Create Group Modal -->
+<div id="createGroupModal" class="modal">
+    <div class="modal-content">
+        <h2>Create Group</h2>
+        <div class="input-group">
+            <input type="text" id="group-name" placeholder="Enter Group Name">
+        </div>
+        <div class="input-group">
+            <input type="file" id="group-icon" accept="image/*">
+        </div>
+        <div class="input-group">
+            <textarea id="group-description" placeholder="Enter Group Description" rows="3"></textarea>
+        </div>
+        <div class="input-group">
+            <select id="group-privacy">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
+        </div>
+        <button id="createGroupSubmit" class="btn">Create</button>
+        <button class="closeModal btn">Close</button>
+    </div>
+</div>
+
+<!-- Your Groups Section -->
+<div id="groupslist" class="search-friends">
+    <h3>Public Group List</h3>
+    <div id="groupList">
+        <p>Loading public groups...</p>
+    </div>
+</div>
+<div id="yourGroupsList" class="search-friends">
+    <h3>Your Groups</h3>
+    <div id="yourGroupList"> <!-- Changed the ID to 'yourGroupList' -->
+        <p>Loading your groups...</p>
+    </div>
+</div>
+
+</section>
+
+
+    <!-- Chat Section -->
+    <section id="chat-section">
+        <h2>Chat</h2>
+        <div class="messages" id="messages"></div>
+         <div id="typing-indicator" style="display: none; font-style: italic; color: gray;">User is typing...</div>
+        <div class="message-box">
+            <input type="text" id="message-input" placeholder="Type your message here">
+            	<label for="attachment-input"><i class="fas fa-paperclip"></i></label>
+               <input type="file" id="attachment-input" accept=".jpg,.png,.pdf,.gif,.mp4,.mp3" style="display:none;" >
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <button id="back-to-search">Back to Search</button>
+    </section>
+</div>
+<div id="imageModal" style="display:none;">
+    <div class="modal-content">
+        <span id="closeModal">X</span>
+        <img id="modalImage" alt="Modal Image">
+    </div>
+</div>
+<div id="fullViewModal" class="modal">
+    <div class="modal-content">
+        <span id="closeFullViewModal" class="close">&times;</span>
+        <div id="modalMediaContent" style="text-align: center;"></div>
+    </div>
+</div>
+
+<script>
+    const authSection = document.getElementById('auth-section');
+const searchSection = document.getElementById('search-section');
+const chatSection = document.getElementById('chat-section');
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('message-input');
+const userSearchResult = document.getElementById('user-search-result');
+
+let currentFriendId = null;
+let currentFriendUsername = null;
+let currentFriendProfileIcon = null;
+
+// Utility: Show specific section
+function showSection(sectionId) {
+    authSection.classList.remove('active');
+    searchSection.classList.remove('active');
+    chatSection.classList.remove('active');
+    document.getElementById(sectionId).classList.add('active');
+
+    if (sectionId === 'search-section') {
+        fetchNotifications(); // Refresh notifications when in search
+    }
+}
+
+// Signup Handler
+// Signup Handler
+document.getElementById('signup-btn').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent form submission
+    const formData = new FormData();
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+    const profileIcon = document.getElementById('profile-icon').files[0];
+    
+    formData.append('action', 'signup');
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('profile_icon', profileIcon);
+
+    fetch('backend.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Store data in localStorage
+
+                alert('Signedup successfully, Please login!!');
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+// Login Handler
+document.getElementById('login-btn').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent form submission
+    const payload = {
+        action: 'login',
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value,
+    };
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                sessionStorage.setItem('user_id', data.user_id);
+                sessionStorage.setItem('username', data.username);
+                sessionStorage.setItem('profile_icon', data.profile_icon);
+                // Hide auth section and show the search section
+                authSection.classList.remove('active');
+                showSection('search-section');
+            } else {
+                alert(data.message);
+            }
+        });
+});
+// Search Friends Handler
+document.getElementById('search-btn').addEventListener('click', function () {
+    handleSearch();
+});
+
+document.getElementById('search-user').addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent default form submission
+        handleSearch();
+    }
+});
+
+function handleSearch() {
+    const username = document.getElementById('search-user').value.trim();
+    const userId = sessionStorage.getItem('user_id');
+
+    if (!userId) {
+        alert('You must log in to search for friends.');
+        showSection('auth-section');
+        return;
+    }
+
+    if (!username) {
+        alert('Please enter a username to search.');
+        return;
+    }
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'search', username }),
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const isOnline = data.is_online;
+                const statusText = isOnline ? 'Online' : 'Offline';
+                const statusColor = isOnline ? 'green' : 'gray';
+
+                userSearchResult.innerHTML = `
+                    <div>
+                        <img src="${data.profile_icon || 'default-icon.png'}" alt="Profile" width="50">
+                        <span>${data.username}</span>
+                        <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
+                        <button onclick="startChat(${data.id})">Chat</button>
+                    </div>
+                `;
+            } else {
+                userSearchResult.innerHTML = '<p>User not found</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to fetch user information. Please try again.');
+        });
+}
+
+// Fetch Notifications
+function fetchNotifications() {
+    const userId = sessionStorage.getItem('user_id');
+    if (!userId) return;
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch_notifications', user_id: userId }),
+    })
+        .then(res => res.json())
+        .then(data => {
+            const notificationsList = document.getElementById('notifications-list');
+            notificationsList.innerHTML = ''; // Clear existing notifications to avoid duplicates
+
+            if (data.success && data.notifications.length > 0) {
+                const uniqueNotifications = new Set(); // To track unique usernames
+
+                const notifications = data.notifications.map(notification => {
+                    if (!uniqueNotifications.has(notification.username)) {
+                        uniqueNotifications.add(notification.username); // Add to unique set
+                        return `
+                            <div>
+                                <img src="${notification.profile_icon}" alt="Profile" width="50">
+                                <span>${notification.username}</span>
+                                <button onclick="startChat(${notification.sender_id})">Chat</button>
+                            </div>
+                        `;
+                    }
+                    return '';
+                }).join('');
+
+                notificationsList.innerHTML = notifications;
+            } else {
+                notificationsList.innerHTML = '<p>No new messages</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching notifications:', error);
+        });
+}
+
+
+// Start Chat Handler
+function startChat(friendId) {
+    currentFriendId = friendId;
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_notifications_read', user_id: sessionStorage.getItem('user_id'), friend_id: currentFriendId }),
+    });
+
+    showSection('chat-section');
+    fetchMessages(); // Fetch initial messages
+}
+
+// Fetch Messages
+function fetchMessages() {
+    const userId = sessionStorage.getItem('user_id');
+    const friendId = currentFriendId;
+const currentScrollPosition = messagesDiv.scrollTop;
+    const isScrolledToBottom = (messagesDiv.scrollHeight - messagesDiv.clientHeight) === currentScrollPosition;
+
+    if (!userId || !friendId) {
+        console.error("User ID or Friend ID is missing.");
+        return;
+    }
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'fetch_messages',
+            user_id: userId,
+            friend_id: friendId
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const messagesDiv = document.getElementById('messages');
+            const playingMedia = Array.from(messagesDiv.querySelectorAll('video, audio')).reduce((acc, el) => {
+                if (!el.paused) acc[el.id] = el.currentTime;
+                return acc;
+            }, {});
+
+            messagesDiv.innerHTML = ''; // Clear existing messages
+
+            data.messages.forEach(msg => {
+                const isSentByUser = msg.sender_id == userId;
+                const senderProfileIcon = isSentByUser ? data.currentUser.profile_icon : data.friend.profile_icon;
+                const senderUsername = isSentByUser ? data.currentUser.username : data.friend.username;
+
+                // Create message container
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', isSentByUser ? 'sent' : 'received');
+
+                // Build message content
+                let content = `
+                    <img src="${senderProfileIcon || 'default-icon.png'}" alt="Profile" class="profile-icon">
+                    <div>
+                        <div class="username">${senderUsername}</div>
+                        <div class="content">${msg.message || ''}</div>
+                `;
+
+                // Handle attachments
+                if (msg.attachment) {
+                    if (msg.attachment.match(/\.(jpg|png|gif)$/)) {
+                        // Image attachment with modal support
+                        content += `
+                            <img src="${msg.attachment}" alt="Attachment" class="attachment-image" 
+                                onclick="showImageModal('${msg.attachment}')">
+                        `;
+                    } else if (msg.attachment.match(/\.(mp4)$/)) {
+                        // Video attachment
+                        content += `
+                            <div>
+                                <video controls class="attachment-video" id="video-${msg.id}" style="width: 100%; max-width: 500px;">
+                                    <source src="${msg.attachment}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <button class="full-view-btn" data-src="${msg.attachment}" data-type="video">Full View</button>
+                            </div>`;
+                    } else if (msg.attachment.match(/\.(mp3)$/)) {
+                        content += `
+                            <div>
+                                <audio controls class="attachment-audio" id="audio-${msg.id}" style="width: 100%; max-width: 500px;">
+                                    <source src="${msg.attachment}" type="audio/mp3">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <button class="full-view-btn" data-src="${msg.attachment}" data-type="audio">Full View</button>
+                            </div>`;
+                    } else {
+                        // Unsupported attachment
+                        content += `<a href="${msg.attachment}" target="_blank" class="attachment-link">Download File</a>`;
+                    }
+                }
+
+                content += `</div>`; // Close inner div
+                messageDiv.innerHTML = content;
+                messagesDiv.appendChild(messageDiv);
+            });
+if (isScrolledToBottom) {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } else {
+                // If the user wasn't at the bottom, retain the scroll position
+                messagesDiv.scrollTop = currentScrollPosition;
+            }
+            // Scroll to the bottom to show the latest
+
+            // Restore playback state for media elements
+            Object.keys(playingMedia).forEach(id => {
+                const media = document.getElementById(id);
+                if (media) {
+                    media.currentTime = playingMedia[id];
+                    media.play(); // Resume playback if it was playing
+                }
+            });
+
+        } else {
+            console.error('Failed to fetch messages:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching messages:', error);
+    });
+}
+
+// Function to show image in a modal
+function showImageModal(imageSrc) {
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <img src="${imageSrc}" alt="Modal Image" class="modal-image">
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeButton = modal.querySelector('.close-button');
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+
+    // Close modal when clicking outside of the image
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Function to handle full view of attachments (video/audio)
+// Send Messages
+// Send Messages Handler
+document.getElementById('send-btn').addEventListener('click', function () {
+    sendMessage();
+});
+
+// Handle pressing Enter in the Message Input Box
+document.getElementById('message-input').addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent default action
+        sendMessage(); // Trigger send message function
+    }
+});
+
+function sendMessage() {
+    const userId = sessionStorage.getItem('user_id'); // Get sender user ID
+    const receiverId = currentFriendId; // Get receiver ID (should be set when starting chat)
+    const message = document.getElementById('message-input').value.trim(); // Get message text
+    const attachment = document.getElementById('attachment-input').files[0]; // Get selected file
+
+    if (!userId || !receiverId) {
+        alert('You must select a friend to chat with.');
+        return; // Exit if no friend is selected
+    }
+
+    if (!message && !attachment) {
+        alert('Please type a message or attach a file before sending.');
+        return; // Exit if no message or file is provided
+    }
+
+    // Create FormData object to handle both text and file data
+    const formData = new FormData();
+    formData.append('action', 'send_message'); // Action type
+    formData.append('sender_id', userId); // Sender ID
+    formData.append('receiver_id', receiverId); // Receiver ID
+    if (message) formData.append('message', message); // Add message text if provided
+    if (attachment) formData.append('attachment', attachment); // Add file if provided
+
+    // Make a POST request to the server
+    fetch('backend.php', {
+        method: 'POST',
+        body: formData, // FormData for file and message
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // On success, reload messages and clear input fields
+                fetchMessages(); // Refresh message list
+                document.getElementById('message-input').value = ''; // Clear message input
+                document.getElementById('attachment-input').value = ''; // Clear file input
+            } else {
+                // Display error if the server response indicates failure
+                alert(data.message || 'Failed to send message.');
+            }
+        })
+        .catch(error => {
+            console.error('Error sending message:', error);
+            alert('An error occurred while sending the message. Please try again.');
+        });
+}
+
+
+// Back to Search
+document.getElementById('back-to-search').addEventListener('click', function () {
+    showSection('search-section');
+});
+// Get modal elements
+const loginModal = document.getElementById("loginModal");
+const signUpModal = document.getElementById("signUpModal");
+
+// Get buttons
+const openLoginModal = document.getElementById("openLoginModal");
+const openSignUpModal = document.getElementById("openSignUpModal");
+const closeModalButtons = document.querySelectorAll(".closeModal");
+
+// Open Login Modal
+openLoginModal.addEventListener("click", () => {
+    loginModal.style.display = "flex";
+});
+
+// Open Sign-Up Modal
+openSignUpModal.addEventListener("click", () => {
+    signUpModal.style.display = "flex";
+});
+
+// Close Modals
+closeModalButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        loginModal.style.display = "none";
+        signUpModal.style.display = "none";
+    });
+});
+
+// Close modal when clicking outside of content
+window.addEventListener("click", (e) => {
+    if (e.target === loginModal) loginModal.style.display = "none";
+    if (e.target === signUpModal) signUpModal.style.display = "none";
+});
+document.getElementById('logout-btn').addEventListener('click', function () {
+    alert('You have been logged out.');
+    showSection('auth-section'); // Redirect to login section
+});
+let typingTimeout;
+
+messageInput.addEventListener('input', () => {
+    clearTimeout(typingTimeout);
+    sendTypingStatus(true); // Notify the backend that the user is typing
+
+    typingTimeout = setTimeout(() => {
+        sendTypingStatus(false); // Notify the backend that the user stopped typing
+    }, 1000); // Delay to mark the end of typing
+});
+
+function sendTypingStatus(isTyping) {
+    const userId = sessionStorage.getItem('user_id');
+    if (!userId || !currentFriendId) return;
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'typing_status',
+            sender_id: userId,
+            receiver_id: currentFriendId,
+            is_typing: isTyping
+        }),
+    });
+}
+
+// Listen for typing notifications from the backend
+let messageInterval, typingInterval;
+
+function startChat(friendId) {
+    currentFriendId = friendId;
+
+    if (messageInterval) clearInterval(messageInterval);
+    if (typingInterval) clearInterval(typingInterval);
+
+    showSection('chat-section');
+    fetchMessages();
+
+    messageInterval = setInterval(fetchMessages, 1000);
+    typingInterval = setInterval(() => {
+        fetch('backend.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'get_typing_status',
+                user_id: sessionStorage.getItem('user_id'),
+                friend_id: currentFriendId
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (data.success && data.is_typing && data.username) {
+                typingIndicator.style.display = 'block';
+                typingIndicator.textContent = `${data.username} is typing...`;
+            } else {
+                typingIndicator.style.display = 'none';
+            }
+        });
+    }, 1000);
+}
+// Show image in modal
+function showImageModal(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = imageSrc;
+    modal.style.display = 'flex';
+
+    // Close modal when the close button is clicked
+    document.getElementById('closeModal').onclick = () => {
+        modal.style.display = 'none';
+        modalImage.src = '';
+    };
+
+    // Close modal when clicking outside the modal content
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            modalImage.src = '';
+        }
+    };
+}
+// Add event listener for all Full View buttons dynamically
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('full-view-btn')) {
+        const src = event.target.getAttribute('data-src');
+        const type = event.target.getAttribute('data-type');
+        const modalContent = document.getElementById('modalMediaContent');
+
+        // Clear existing modal content
+        modalContent.innerHTML = '';
+
+        // Add video or audio based on type
+        if (type === 'video') {
+            modalContent.innerHTML = `
+                <video controls style="width: 100%; max-width: 500px;">
+                    <source src="${src}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+        } else if (type === 'audio') {
+            modalContent.innerHTML = `
+                <audio controls style="width: 100%; max-width: 500px;">
+                    <source src="${src}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>`;
+        }
+
+        // Show modal
+        document.getElementById('fullViewModal').style.display = 'flex';
+    }
+});
+
+// Close Full View Modal
+document.getElementById('closeFullViewModal').addEventListener('click', function () {
+    document.getElementById('fullViewModal').style.display = 'none';
+});
+
+// Close Modal When Clicking Outside
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('fullViewModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+setInterval(fetchNotifications, 1000);
+function togglePassword(fieldId, toggleIcon) {
+    const passwordField = document.getElementById(fieldId);
+    const isPassword = passwordField.type === "password";
+    passwordField.type = isPassword ? "text" : "password";
+    toggleIcon.classList.toggle("fa-eye");
+    toggleIcon.classList.toggle("fa-eye-slash");
+}
+// Get modal elements
+// Get modal elements
+const createGroupModal = document.getElementById("createGroupModal");
+const createGroupBtn = document.getElementById("createGroupBtn");
+const closeCreateGroupModal = createGroupModal.querySelector(".closeModal");
+const createGroupSubmit = document.getElementById("createGroupSubmit");
+
+// Open Create Group Modal
+createGroupBtn.addEventListener("click", () => {
+    createGroupModal.style.display = "flex";
+});
+
+// Close Create Group Modal
+closeCreateGroupModal.addEventListener("click", () => {
+    createGroupModal.style.display = "none";
+});
+
+// Close modal when clicking outside the modal content
+window.addEventListener("click", (event) => {
+    if (event.target === createGroupModal) {
+        createGroupModal.style.display = "none";
+    }
+});
+
+// Submit Group Creation Form
+// Event listener for creating a group
+// Event listener for creating a group
+createGroupSubmit.addEventListener("click", () => {
+    const formData = new FormData();
+    const groupName = document.getElementById("group-name").value;
+    const groupIcon = document.getElementById("group-icon").files[0];
+    const groupDescription = document.getElementById("group-description").value;
+    const groupPrivacy = document.getElementById("group-privacy").value;
+
+    // Get user_id from sessionStorage
+    const userId = sessionStorage.getItem("user_id");
+
+    // Validate inputs
+    if (!groupName) {
+        alert("Please enter a group name.");
+        return;
+    }
+
+    formData.append("action", "create_group");
+    formData.append("group_name", groupName);
+    formData.append("group_icon", groupIcon);
+    formData.append("group_description", groupDescription);
+    formData.append("group_privacy", groupPrivacy);
+    formData.append("user_id", userId); // Send user_id to the backend
+
+    // Make backend call to create the group
+    fetch("backend.php", {
+        method: "POST",
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+    console.log('Group creation response:', data); // Add this line to debug
+    if (data.success) {
+        alert("Group created successfully!");
+        createGroupModal.style.display = "none";
+        fetchPublicGroups();
+    } else {
+        alert(data.message || "Failed to create group.");
+    }
+})
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+        });
+});
+// Function to fetch public groups and update the UI
+// Fetch and display public groups
+function fetchPublicGroups() {
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch_public_groups' }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        const groupList = document.getElementById('groupList');
+        groupList.innerHTML = ''; // Clear the existing list
+
+        if (data.success && data.groups.length > 0) {
+            data.groups.forEach(group => {
+                const groupName = group.group_name || 'Unnamed Group';
+                const groupIcon = group.group_icon || 'default-group-icon.png';
+                const groupDescription = group.group_description || 'No description available';
+                const creatorUsername = group.creator_username || 'Unknown';
+                const creatorIcon = group.creator_icon || 'default-user-icon.png';
+
+                // Add group to the list
+                groupList.innerHTML += `
+                    <div class="group-item">
+                        <img src="${groupIcon}" alt="Group Icon" width="50">
+                        <div>
+                            <h4>Group name => "${groupName}"</h4>
+                            <p>Group description => "${groupDescription}"</p>
+                            <small>Created by:
+                                <img src="${creatorIcon}" alt="Creator Icon" width="30">
+                                ${creatorUsername}
+                            </small>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            groupList.innerHTML = '<p>No public groups found.</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching public groups:', error);
+        alert('Failed to load groups. Please try again.');
+    });
+}
+fetchPublicGroups();
+// Fetch and display user-created groups
+function fetchUserGroups() {
+    const userId = sessionStorage.getItem('user_id');
+    if (!userId) {
+        alert('You must be logged in to view your groups.');
+        return;
+    }
+
+    // Predefined unique colors
+    const uniqueColors = [
+        '#FFDDC1', '#FFABAB', '#FFC3A0', '#D5AAFF',
+        '#85E3FF', '#B9FBC0', '#FBFFA3', '#FFABAB',
+        '#FFC3A0', '#D5AAFF', '#85E3FF'
+    ];
+
+    fetch('backend.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch_user_groups', user_id: userId }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const groupList = document.getElementById('yourGroupList');
+            if (!groupList) {
+                console.error('Error: Element with ID "yourGroupList" does not exist.');
+                return;
+            }
+
+            groupList.innerHTML = ''; // Clear any existing groups
+
+            if (data.success && data.groups.length > 0) {
+                data.groups.forEach((group, index) => { // Use index from forEach
+                    const groupName = group.name || 'Unnamed Group';
+                    const groupIcon = group.icon || 'default-group-icon.png';
+                    const groupDescription = group.description || 'No description available';
+                    const privacy = group.privacy ? group.privacy.charAt(0).toUpperCase() + group.privacy.slice(1) : 'Unknown';
+                    const backgroundColor = uniqueColors[index % uniqueColors.length]; // Cycle through colors
+
+                    groupList.innerHTML += `
+                        <div class="group-item" style="background-color: ${backgroundColor};">
+                            <img src="${groupIcon}" alt="Group Icon" width="50">
+                            <div>
+                                <h4>Group Name: ${groupName}</h4>
+                                <p>Description: ${groupDescription}</p>
+                                <p>Privacy: ${privacy}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                groupList.innerHTML = '<p>No groups found. Create a group to see it here!</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user groups:', error);
+            alert('Failed to load your groups. Please try again.');
+        });
+}
+
+fetchUserGroups();
+
+</script>
+</body>
